@@ -13,6 +13,10 @@ public class CameraManager : MonoBehaviour
     [Header("Posición Flappy")]
     public Vector3 flappyOffset = new Vector3(-8f, 2f, 0f);
 
+    [Header("Launch")]
+    public Transform launchCameraPoint;
+    public Transform launchTarget;
+
     private Camera cam;
 
     void Start()
@@ -25,26 +29,50 @@ public class CameraManager : MonoBehaviour
         if (player == null)
             return;
 
-        Vector3 targetOffset = normalOffset;
+        Vector3 desiredPosition;
 
-        switch (GameManager.Instance.currentStage)
+        
+
+        if (GameManager.Instance.currentStage == GameManager.Stage.Launch)
         {
-            case GameManager.Stage.Normal:
-                targetOffset = normalOffset;
-                break;
-
-            case GameManager.Stage.Flappy:
-                targetOffset = flappyOffset;
-                break;
+           
+            desiredPosition = launchCameraPoint.position;
         }
+        else
+        {
+            Vector3 targetOffset = normalOffset;
 
-        Vector3 desiredPosition = player.position + targetOffset;
+            switch (GameManager.Instance.currentStage)
+            {
+                case GameManager.Stage.Normal:
+                    targetOffset = normalOffset;
+                    break;
+
+                case GameManager.Stage.Flappy:
+                    targetOffset = flappyOffset;
+                    break;
+
+                case GameManager.Stage.Shape:
+                    targetOffset = normalOffset;
+                    break;
+            }
+
+            desiredPosition = player.position + targetOffset;
+        }
 
         cam.transform.position = Vector3.Lerp(
             cam.transform.position,
             desiredPosition,
             smoothSpeed * Time.deltaTime);
 
-        cam.transform.LookAt(player);
+      
+        if (GameManager.Instance.currentStage == GameManager.Stage.Launch)
+        {
+            cam.transform.LookAt(launchTarget);
+        }
+        else
+        {
+            cam.transform.LookAt(player);
+        }
     }
 }
