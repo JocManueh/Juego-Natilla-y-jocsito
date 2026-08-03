@@ -12,7 +12,6 @@ public class GameManager : MonoBehaviour
     {
         Normal,
         Flappy,
-        WallWalk,
         Shape,
         Ship,
         Launch,
@@ -39,6 +38,8 @@ public class GameManager : MonoBehaviour
         currentStage = newStage;
 
         Debug.Log("Etapa actual: " + currentStage);
+
+        
     }
 
     public void SetCheckpoint(Vector3 position)
@@ -54,5 +55,12 @@ public class GameManager : MonoBehaviour
 
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+
+        ShapeController shape = player.GetComponent<ShapeController>();
+
+        if (shape != null)
+        {
+            shape.ResetShape();
+        }
     }
 }
