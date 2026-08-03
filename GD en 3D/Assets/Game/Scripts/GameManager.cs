@@ -1,14 +1,12 @@
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
-
 {
-
-    public PlayerController playerController;
-    public FlappyController flappyController;
-
     public static GameManager Instance;
 
+    public GameObject player;
+
+    private Vector3 checkpointPosition;
 
     public enum Stage
     {
@@ -21,7 +19,6 @@ public class GameManager : MonoBehaviour
         Finish
     }
 
-    [Header("Estado del juego")]
     public Stage currentStage = Stage.Normal;
 
     private void Awake()
@@ -32,27 +29,30 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
     }
 
+    private void Start()
+    {
+        checkpointPosition = player.transform.position;
+    }
+
     public void ChangeStage(Stage newStage)
     {
         currentStage = newStage;
 
         Debug.Log("Etapa actual: " + currentStage);
+    }
 
-        switch (currentStage)
-        {
-            case Stage.Normal:
+    public void SetCheckpoint(Vector3 position)
+    {
+        checkpointPosition = position;
+    }
 
-                playerController.enabled = true;
-                flappyController.enabled = false;
+    public void RespawnPlayer()
+    {
+        player.transform.position = checkpointPosition;
 
-                break;
+        Rigidbody rb = player.GetComponent<Rigidbody>();
 
-            case Stage.Flappy:
-
-                playerController.enabled = false;
-                flappyController.enabled = true;
-
-                break;
-        }
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
     }
 }

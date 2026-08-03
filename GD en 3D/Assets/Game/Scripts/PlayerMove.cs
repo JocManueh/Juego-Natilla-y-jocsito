@@ -1,40 +1,28 @@
 using UnityEngine;
 
-[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
-    public float speed = 6f;
-    public float gravity = -20f;
+    public float moveSpeed = 6f;
 
-    private CharacterController controller;
-    private Vector3 velocity;
+    private Rigidbody rb;
 
-    void Start()
+    void Awake()
     {
-        controller = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();
     }
-
-    void Update()
+    
+    void FixedUpdate()
+        
     {
-        // Movimiento con flechas o WASD
-        float horizontal = Input.GetAxis("Horizontal");
+        if (GameManager.Instance.currentStage != GameManager.Stage.Normal)
+            return;
         float vertical = Input.GetAxis("Vertical");
 
-        Vector3 move = new Vector3(0f, 0f, vertical);
+        Vector3 velocity = rb.linearVelocity;
 
-        if (move.magnitude > 1)
-            move.Normalize();
+        velocity.z = vertical * moveSpeed;
 
-        controller.Move(move * speed * Time.deltaTime);
-
-        // Gravedad
-        if (controller.isGrounded && velocity.y < 0)
-        {
-            velocity.y = -2f;
-        }
-
-        velocity.y += gravity * Time.deltaTime;
-
-        controller.Move(velocity * Time.deltaTime);
+        rb.linearVelocity = velocity;
     }
 }
