@@ -37,9 +37,17 @@ public class GameManager : MonoBehaviour
     {
         currentStage = newStage;
 
-        Debug.Log("Etapa actual: " + currentStage);
+        if (currentStage == Stage.Normal)
+        {
+            ShapeController shape = player.GetComponent<ShapeController>();
 
-        
+            if (shape != null)
+            {
+                shape.ResetShape();
+            }
+        }
+
+        Debug.Log("Etapa actual: " + currentStage);
     }
 
     public void SetCheckpoint(Vector3 position)

@@ -11,16 +11,18 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
     }
-    
+
     void FixedUpdate()
-        
     {
         if (GameManager.Instance.currentStage != GameManager.Stage.Normal)
             return;
-        float vertical = Input.GetAxis("Vertical");
+
+        float horizontal = Input.GetAxis("Horizontal"); // A y D
+        float vertical = Input.GetAxis("Vertical");     // W y S
 
         Vector3 velocity = rb.linearVelocity;
 
+        velocity.x = horizontal * moveSpeed;
         velocity.z = vertical * moveSpeed;
 
         rb.linearVelocity = velocity;
