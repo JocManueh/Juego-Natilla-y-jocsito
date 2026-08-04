@@ -9,6 +9,7 @@ public class LightningController : MonoBehaviour
 
     private bool started = false;
 
+    // Plano YZ
     private Vector3 direction = Vector3.up;
 
     void Awake()
@@ -16,12 +17,17 @@ public class LightningController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
+    public void ResetLightning()
+    {
+        started = false;
+        direction = Vector3.up;
+    }
+
     void Update()
     {
-        if (GameManager.Instance.currentStage != GameManager.Stage.Lightning)
+        if (!enabled)
             return;
 
-        // Esperar ENTER
         if (!started)
         {
             if (Input.GetKeyDown(KeyCode.Return))
@@ -33,41 +39,34 @@ public class LightningController : MonoBehaviour
             return;
         }
 
-        // Cambiar dirección (sin reversa)
-
-        if (Input.GetKeyDown(KeyCode.W) && direction != Vector3.down)
-            direction = Vector3.up;
-
-        if (Input.GetKeyDown(KeyCode.S) && direction != Vector3.up)
+        // W = arriba en tu laberinto
+        if (Input.GetKeyDown(KeyCode.W) && direction != Vector3.up)
             direction = Vector3.down;
 
-        if (Input.GetKeyDown(KeyCode.A) && direction != Vector3.forward)
-            direction = Vector3.back;
+        // S = abajo en tu laberinto
+        if (Input.GetKeyDown(KeyCode.S) && direction != Vector3.down)
+            direction = Vector3.up;
 
-        if (Input.GetKeyDown(KeyCode.D) && direction != Vector3.back)
+        // A = Z+
+        if (Input.GetKeyDown(KeyCode.A) && direction != Vector3.back)
             direction = Vector3.forward;
+
+        // D = Z-
+        if (Input.GetKeyDown(KeyCode.D) && direction != Vector3.forward)
+            direction = Vector3.back;
     }
 
     void FixedUpdate()
     {
-        void FixedUpdate()
-        {
-            if (GameManager.Instance.currentStage != GameManager.Stage.Lightning)
-                return;
+        if (!enabled)
+            return;
 
-            transform.position += Vector3.up * speed * Time.fixedDeltaTime;
-        }
         if (!started)
         {
             rb.linearVelocity = Vector3.zero;
             return;
         }
-        Debug.Log(direction);
+
         rb.linearVelocity = direction * speed;
-    }
-    public void ResetLightning()
-    {
-        started = false;
-        direction = Vector3.up;
     }
 }

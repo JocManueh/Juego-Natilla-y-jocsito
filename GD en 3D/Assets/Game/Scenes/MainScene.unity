@@ -3570,6 +3570,8 @@ MonoBehaviour:
   player: {fileID: 1487269086}
   capsuleVisual: {fileID: 687582509}
   sphereVisual: {fileID: 614117340}
+  capsuleCollider: {fileID: 1487269087}
+  sphereCollider: {fileID: 1487269098}
   currentStage: 0
 --- !u!4 &670009498
 Transform:
@@ -5011,6 +5013,7 @@ MonoBehaviour:
   smoothSpeed: 5
   normalOffset: {x: -1, y: 5, z: -10}
   flappyOffset: {x: -12, y: 3, z: -1}
+  lightningOffset: {x: -8, y: 0, z: 0}
 --- !u!4 &897441823
 Transform:
   m_ObjectHideFlags: 0
@@ -6734,6 +6737,7 @@ GameObject:
   - component: {fileID: 1487269095}
   - component: {fileID: 1487269096}
   - component: {fileID: 1487269097}
+  - component: {fileID: 1487269098}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -6773,7 +6777,7 @@ Transform:
   m_GameObject: {fileID: 1487269086}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.9, z: 120.8}
+  m_LocalPosition: {x: 0, y: 0.81, z: 120.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6880,12 +6884,33 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1487269086}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 669c9cdbd503fd34d9b11758406bf3e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LightningController
-  speed: 15
+  speed: 5
+--- !u!135 &1487269098
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1487269086}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.25
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1487987124
 GameObject:
   m_ObjectHideFlags: 0

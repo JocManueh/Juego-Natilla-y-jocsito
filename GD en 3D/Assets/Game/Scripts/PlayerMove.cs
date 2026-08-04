@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+
+        Debug.Log(GameManager.Instance.currentStage);
         if (GameManager.Instance.currentStage != GameManager.Stage.Normal)
             return;
 

@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     }
     public GameObject capsuleVisual;
     public GameObject sphereVisual;
+    public CapsuleCollider capsuleCollider;
+    public SphereCollider sphereCollider;
 
     public Stage currentStage = Stage.Normal;
 
@@ -34,20 +36,42 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         checkpointPosition = player.transform.position;
+
+        currentStage = Stage.Normal;
+
+        Debug.Log("Etapa inicial: " + currentStage);
     }
 
     public void ChangeStage(Stage newStage)
     {
         currentStage = newStage;
 
-        if (currentStage == Stage.Normal)
-        {
-            ShapeController shape = player.GetComponent<ShapeController>();
+        // Activar solo el controlador correspondiente
+        PlayerController playerController = player.GetComponent<PlayerController>();
+        FlappyController flappy = player.GetComponent<FlappyController>();
+        ShapeController shape = player.GetComponent<ShapeController>();
+        LightningController lightning = player.GetComponent<LightningController>();
 
-            if (shape != null)
-            {
-                shape.ResetShape();
-            }
+        if (playerController != null)
+            playerController.enabled = (newStage == Stage.Normal);
+
+        if (flappy != null)
+            flappy.enabled = (newStage == Stage.Flappy);
+
+        if (shape != null)
+            shape.enabled = (newStage == Stage.Shape);
+
+        if (lightning != null)
+            lightning.enabled = (newStage == Stage.Lightning);
+
+        if (newStage == Stage.Normal && shape != null)
+        {
+            shape.ResetShape();
+            capsuleVisual.SetActive(true);
+            sphereVisual.SetActive(false);
+
+            capsuleCollider.enabled = true;
+            sphereCollider.enabled = false;
         }
 
         Debug.Log("Etapa actual: " + currentStage);
@@ -83,9 +107,19 @@ public class GameManager : MonoBehaviour
         capsuleVisual.SetActive(false);
         sphereVisual.SetActive(true);
 
+        capsuleCollider.enabled = false;
+        sphereCollider.enabled = true;
+
         Rigidbody rb = player.GetComponent<Rigidbody>();
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+
+        LightningController lightning = player.GetComponent<LightningController>();
+
+        if (lightning != null)
+        {
+            lightning.ResetLightning();
+        }
 
         Debug.Log("Modo Lightning");
     }

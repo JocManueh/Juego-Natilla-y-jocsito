@@ -13,6 +13,9 @@ public class CameraManager : MonoBehaviour
     [Header("Posición Flappy")]
     public Vector3 flappyOffset = new Vector3(-8f, 2f, 0f);
 
+    [Header("Posición Lightning")]
+    public Vector3 lightningOffset = new Vector3(-8f, 0f, 0f);
+
     private Camera cam;
 
     void Start()
@@ -39,6 +42,10 @@ public class CameraManager : MonoBehaviour
 
             case GameManager.Stage.Shape:
                 targetOffset = normalOffset;
+                break;
+
+            case GameManager.Stage.Lightning:
+                targetOffset = lightningOffset;
                 break;
         }
 
