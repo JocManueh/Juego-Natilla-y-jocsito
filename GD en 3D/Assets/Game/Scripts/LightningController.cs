@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 public class LightningController : MonoBehaviour
@@ -24,7 +25,20 @@ public class LightningController : MonoBehaviour
         direction = Vector3.forward;
 
         if (trail != null)
+        {
+            trail.emitting = false;
             trail.Clear();
+
+            StartCoroutine(ResetTrail());
+        }
+    }
+
+    private IEnumerator ResetTrail()
+    {
+        yield return null; // Espera un frame
+
+        trail.Clear();
+        trail.emitting = true;
     }
 
     void Update()

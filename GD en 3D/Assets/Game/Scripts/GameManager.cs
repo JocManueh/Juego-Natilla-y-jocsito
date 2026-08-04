@@ -123,7 +123,13 @@ public class GameManager : MonoBehaviour
             lightning.ResetLightning();
         }
 
-        Debug.Log("Modo Lightning");
+        TrailRenderer trail = sphereVisual.GetComponent<TrailRenderer>();
+
+        if (trail != null)
+        {
+            trail.enabled = false;
+            trail.enabled = true;
+        }
     }
     public void EndLightningMode(Vector3 exitPosition)
     {
