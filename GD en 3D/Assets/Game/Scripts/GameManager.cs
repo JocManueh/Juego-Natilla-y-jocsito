@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     public GameObject sphereVisual;
     public CapsuleCollider capsuleCollider;
     public SphereCollider sphereCollider;
-
+    public Transform lightningSpawn;
     public Stage currentStage = Stage.Normal;
 
     private void Awake()
@@ -111,6 +111,8 @@ public class GameManager : MonoBehaviour
         sphereCollider.enabled = true;
 
         Rigidbody rb = player.GetComponent<Rigidbody>();
+
+        rb.useGravity = false;
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
 
@@ -123,5 +125,30 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("Modo Lightning");
     }
+    public void EndLightningMode(Vector3 exitPosition)
+    {
+        ChangeStage(Stage.Normal);
+
+        player.transform.position = exitPosition;
+
+        capsuleVisual.SetActive(true);
+        sphereVisual.SetActive(false);
+
+        capsuleCollider.enabled = true;
+        sphereCollider.enabled = false;
+
+        Rigidbody rb = player.GetComponent<Rigidbody>();
+
+        rb.useGravity = true;
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;;
+
+        Debug.Log("Lightning terminado");
+    }
+    public void RestartLightning()
+    {
+        StartLightningMode(lightningSpawn.position);
+    }
+
 
 }

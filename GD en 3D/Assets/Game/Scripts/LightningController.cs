@@ -9,18 +9,22 @@ public class LightningController : MonoBehaviour
 
     private bool started = false;
 
-    // Plano YZ
-    private Vector3 direction = Vector3.up;
-
+    // Dirección inicial (izquierda)
+    private Vector3 direction = Vector3.forward;
+    private TrailRenderer trail;
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        trail = GetComponentInChildren<TrailRenderer>();
     }
 
     public void ResetLightning()
     {
         started = false;
-        direction = Vector3.up;
+        direction = Vector3.forward;
+
+        if (trail != null)
+            trail.Clear();
     }
 
     void Update()
@@ -32,6 +36,7 @@ public class LightningController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Return))
             {
+                direction = Vector3.forward;
                 started = true;
                 Debug.Log("¡Comenzó el laberinto!");
             }
@@ -39,19 +44,19 @@ public class LightningController : MonoBehaviour
             return;
         }
 
-        // W = arriba en tu laberinto
+        // W
         if (Input.GetKeyDown(KeyCode.W) && direction != Vector3.up)
             direction = Vector3.down;
 
-        // S = abajo en tu laberinto
+        // S
         if (Input.GetKeyDown(KeyCode.S) && direction != Vector3.down)
             direction = Vector3.up;
 
-        // A = Z+
+        // A
         if (Input.GetKeyDown(KeyCode.A) && direction != Vector3.back)
             direction = Vector3.forward;
 
-        // D = Z-
+        // D
         if (Input.GetKeyDown(KeyCode.D) && direction != Vector3.forward)
             direction = Vector3.back;
     }
@@ -68,5 +73,38 @@ public class LightningController : MonoBehaviour
         }
 
         rb.linearVelocity = direction * speed;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!enabled)
+            return;
+
+        // Chocó con una pared
+        if (other.CompareTag("LightningWall"))
+        {
+            Debug.Log("¡Perdiste!");
+
+            GameManager.Instance.RestartLightning();
+        }
+
+        // Llegó a la salida
+        if (other.CompareTag("LightningGoal"))
+        {
+            Debug.Log("¡Laberinto completado!");
+
+            // El objeto con el tag LightningGoal debe tener un hijo
+            // llamado ExitPoint que indica dónde reaparece el cilindro.
+            Transform exitPoint = other.transform.Find("ExitPoint");
+
+            if (exitPoint != null)
+            {
+                GameManager.Instance.EndLightningMode(exitPoint.position);
+            }
+            else
+            {
+                Debug.LogError("LightningGoal no tiene un hijo llamado ExitPoint.");
+            }
+        }
     }
 }
