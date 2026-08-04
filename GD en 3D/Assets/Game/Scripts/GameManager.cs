@@ -15,8 +15,11 @@ public class GameManager : MonoBehaviour
         Shape,
         Ship,
         Launch,
-        Finish
+        Finish,
+        Lightning // <-- Añadido para corregir el error CS0117
     }
+    public GameObject capsuleVisual;
+    public GameObject sphereVisual;
 
     public Stage currentStage = Stage.Normal;
 
@@ -71,4 +74,20 @@ public class GameManager : MonoBehaviour
             shape.ResetShape();
         }
     }
+    public void StartLightningMode(Vector3 spawnPosition)
+    {
+        ChangeStage(Stage.Lightning);
+
+        player.transform.position = spawnPosition;
+
+        capsuleVisual.SetActive(false);
+        sphereVisual.SetActive(true);
+
+        Rigidbody rb = player.GetComponent<Rigidbody>();
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        Debug.Log("Modo Lightning");
+    }
+
 }

@@ -43,8 +43,8 @@ public class CameraManager : MonoBehaviour
         }
 
         Vector3 desiredPosition = player.position + targetOffset;
-        Debug.Log("Player: " + player.position);
-        Debug.Log("Camera: " + cam.transform.position);
+        //Debug.Log("Player: " + player.position);
+        //Debug.Log("Camera: " + cam.transform.position);
 
         cam.transform.position = desiredPosition;
 
