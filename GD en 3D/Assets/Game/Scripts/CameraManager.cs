@@ -13,10 +13,6 @@ public class CameraManager : MonoBehaviour
     [Header("Posición Flappy")]
     public Vector3 flappyOffset = new Vector3(-8f, 2f, 0f);
 
-    [Header("Launch")]
-    public Transform launchCameraPoint;
-    public Transform launchTarget;
-
     private Camera cam;
 
     void Start()
@@ -29,50 +25,29 @@ public class CameraManager : MonoBehaviour
         if (player == null)
             return;
 
-        Vector3 desiredPosition;
+        Vector3 targetOffset = normalOffset;
 
-        
-
-        if (GameManager.Instance.currentStage == GameManager.Stage.Launch)
+        switch (GameManager.Instance.currentStage)
         {
-           
-            desiredPosition = launchCameraPoint.position;
-        }
-        else
-        {
-            Vector3 targetOffset = normalOffset;
+            case GameManager.Stage.Normal:
+                targetOffset = normalOffset;
+                break;
 
-            switch (GameManager.Instance.currentStage)
-            {
-                case GameManager.Stage.Normal:
-                    targetOffset = normalOffset;
-                    break;
+            case GameManager.Stage.Flappy:
+                targetOffset = flappyOffset;
+                break;
 
-                case GameManager.Stage.Flappy:
-                    targetOffset = flappyOffset;
-                    break;
-
-                case GameManager.Stage.Shape:
-                    targetOffset = normalOffset;
-                    break;
-            }
-
-            desiredPosition = player.position + targetOffset;
+            case GameManager.Stage.Shape:
+                targetOffset = normalOffset;
+                break;
         }
 
-        cam.transform.position = Vector3.Lerp(
-            cam.transform.position,
-            desiredPosition,
-            smoothSpeed * Time.deltaTime);
+        Vector3 desiredPosition = player.position + targetOffset;
+        Debug.Log("Player: " + player.position);
+        Debug.Log("Camera: " + cam.transform.position);
 
-      
-        if (GameManager.Instance.currentStage == GameManager.Stage.Launch)
-        {
-            cam.transform.LookAt(launchTarget);
-        }
-        else
-        {
-            cam.transform.LookAt(player);
-        }
+        cam.transform.position = desiredPosition;
+
+        cam.transform.LookAt(player);
     }
 }
