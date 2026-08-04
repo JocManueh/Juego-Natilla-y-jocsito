@@ -2,13 +2,17 @@ using UnityEngine;
 
 public class GoalTrigger : MonoBehaviour
 {
+    public GameObject finishPanel;
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
-        {
-            Debug.Log("GANASTE");
+        if (!other.CompareTag("Player"))
+            return;
 
-            GameManager.Instance.ChangeStage(GameManager.Stage.Finish);
-        }
+        Debug.Log("GANASTE");
+
+        finishPanel.SetActive(true);
+
+        Time.timeScale = 0f;
     }
 }
