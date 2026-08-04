@@ -15,9 +15,14 @@ public class GameManager : MonoBehaviour
         Shape,
         Ship,
         Launch,
-        Finish
+        Finish,
+        Lightning // <-- Añadido para corregir el error CS0117
     }
-
+    public GameObject capsuleVisual;
+    public GameObject sphereVisual;
+    public CapsuleCollider capsuleCollider;
+    public SphereCollider sphereCollider;
+    public Transform lightningSpawn;
     public Stage currentStage = Stage.Normal;
 
     private void Awake()
@@ -31,20 +36,42 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         checkpointPosition = player.transform.position;
+
+        currentStage = Stage.Normal;
+
+        Debug.Log("Etapa inicial: " + currentStage);
     }
 
     public void ChangeStage(Stage newStage)
     {
         currentStage = newStage;
 
-        if (currentStage == Stage.Normal)
-        {
-            ShapeController shape = player.GetComponent<ShapeController>();
+        // Activar solo el controlador correspondiente
+        PlayerController playerController = player.GetComponent<PlayerController>();
+        FlappyController flappy = player.GetComponent<FlappyController>();
+        ShapeController shape = player.GetComponent<ShapeController>();
+        LightningController lightning = player.GetComponent<LightningController>();
 
-            if (shape != null)
-            {
-                shape.ResetShape();
-            }
+        if (playerController != null)
+            playerController.enabled = (newStage == Stage.Normal);
+
+        if (flappy != null)
+            flappy.enabled = (newStage == Stage.Flappy);
+
+        if (shape != null)
+            shape.enabled = (newStage == Stage.Shape);
+
+        if (lightning != null)
+            lightning.enabled = (newStage == Stage.Lightning);
+
+        if (newStage == Stage.Normal && shape != null)
+        {
+            shape.ResetShape();
+            capsuleVisual.SetActive(true);
+            sphereVisual.SetActive(false);
+
+            capsuleCollider.enabled = true;
+            sphereCollider.enabled = false;
         }
 
         Debug.Log("Etapa actual: " + currentStage);
@@ -71,4 +98,63 @@ public class GameManager : MonoBehaviour
             shape.ResetShape();
         }
     }
+    public void StartLightningMode(Vector3 spawnPosition)
+    {
+        ChangeStage(Stage.Lightning);
+
+        player.transform.position = spawnPosition;
+
+        capsuleVisual.SetActive(false);
+        sphereVisual.SetActive(true);
+
+        capsuleCollider.enabled = false;
+        sphereCollider.enabled = true;
+
+        Rigidbody rb = player.GetComponent<Rigidbody>();
+
+        rb.useGravity = false;
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        LightningController lightning = player.GetComponent<LightningController>();
+
+        if (lightning != null)
+        {
+            lightning.ResetLightning();
+        }
+
+        TrailRenderer trail = sphereVisual.GetComponent<TrailRenderer>();
+
+        if (trail != null)
+        {
+            trail.enabled = false;
+            trail.enabled = true;
+        }
+    }
+    public void EndLightningMode(Vector3 exitPosition)
+    {
+        ChangeStage(Stage.Normal);
+
+        player.transform.position = exitPosition;
+
+        capsuleVisual.SetActive(true);
+        sphereVisual.SetActive(false);
+
+        capsuleCollider.enabled = true;
+        sphereCollider.enabled = false;
+
+        Rigidbody rb = player.GetComponent<Rigidbody>();
+
+        rb.useGravity = true;
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;;
+
+        Debug.Log("Lightning terminado");
+    }
+    public void RestartLightning()
+    {
+        StartLightningMode(lightningSpawn.position);
+    }
+
+
 }
